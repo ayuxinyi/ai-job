@@ -1,4 +1,10 @@
+import { HomeLayout } from "@/modules/home/ui/layouts/home-layout";
+
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <>
+      <HomeLayout />
+    </>
+  );
 };
 export default Home;

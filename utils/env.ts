@@ -10,6 +10,13 @@ import tryParseEnv from "./type-parse-env";
 export const EnvSchema = z.object({
   NODE_ENV: string(),
   DATABASE_URL: string(),
+  // Clerk 认证配置
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: string(),
+  NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL: string(),
+  NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL: string(),
+  // Clerk 认证配置 - 发布密钥
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string(),
+  CLERK_SECRET_KEY: string(),
 });
 export type EnvSchema = output<typeof EnvSchema>;
 
