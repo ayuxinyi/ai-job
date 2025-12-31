@@ -1,14 +1,16 @@
 import { relations } from "drizzle-orm";
 import { boolean, pgTable, varchar } from "drizzle-orm/pg-core";
 
-import { createdAt, updatedAt, userId } from "../schema-helpers";
+import { createdAt, updatedAt } from "../schema-helpers";
 import { UsersTable } from "./user.schema";
 
 // 用户通知设置表
 export const UserNotificationSettingsTable = pgTable(
   "user_notification_settings",
   {
-    userId,
+    userId: varchar()
+      .notNull()
+      .references(() => UsersTable.id, { onDelete: "cascade" }),
     newJobEmailNotifications: boolean().notNull().default(false),
     aiPrompt: varchar(),
     createdAt,

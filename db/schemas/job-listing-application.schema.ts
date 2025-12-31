@@ -6,9 +6,10 @@ import {
   primaryKey,
   text,
   uuid,
+  varchar,
 } from "drizzle-orm/pg-core";
 
-import { createdAt, updatedAt, userId } from "../schema-helpers";
+import { createdAt, updatedAt } from "../schema-helpers";
 import { JobListingsTable } from "./job-listing.schema";
 import { UsersTable } from "./user.schema";
 
@@ -32,7 +33,9 @@ export const JobListingApplicationsTable = pgTable(
     jobListingId: uuid()
       .notNull()
       .references(() => JobListingsTable.id, { onDelete: "cascade" }),
-    userId,
+    userId: varchar()
+      .notNull()
+      .references(() => UsersTable.id, { onDelete: "cascade" }),
     coverLetter: text(),
     rating: integer(),
     stage: applicationStateEnum().notNull().default("applied"),

@@ -13,10 +13,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  SignedIn,
+  SignedOut,
+} from "@/modules/auth/ui/components/sign-in-status";
 
+import { SidebarUserButton } from "../../../users/ui/components/sidebar-user-button";
 import { ResponsiveSidebar } from "../components/responsive-sidebar";
-import { SidebarUserButton } from "../components/sidebar-user-button";
-import { SignedIn, SignedOut } from "../components/sign-in-status";
 import { HomeSection } from "../sections/home-section";
 
 export const HomeLayout = () => {

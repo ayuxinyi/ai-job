@@ -9,7 +9,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-import { createdAt, id, organizationId, updatedAt } from "../schema-helpers";
+import { createdAt, id, updatedAt } from "../schema-helpers";
 import { JobListingApplicationsTable } from "./job-listing-application.schema";
 import { OrganizationsTable } from "./organization.schema";
 
@@ -65,7 +65,9 @@ export const JobListingsTable = pgTable(
   "job_listings",
   {
     id,
-    organizationId,
+    organizationId: varchar()
+      .notNull()
+      .references(() => OrganizationsTable.id, { onDelete: "cascade" }),
     title: varchar().notNull(),
     description: varchar().notNull(),
     wage: integer(),
