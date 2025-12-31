@@ -3,9 +3,11 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import { cacheTag } from "next/cache";
 
 import db from "@/db/db";
 import { UsersTable } from "@/db/schema";
+import { getUserIdTag } from "@/modules/users/cache/users";
 
 export async function getCurrentUser({ allData = false } = {}) {
   const { userId } = await auth();
@@ -17,6 +19,11 @@ export async function getCurrentUser({ allData = false } = {}) {
 }
 
 async function getUser(userId: string) {
+  //  缓存
+  "use cache";
+  // 缓存用户数据，标签为用户ID
+  cacheTag(getUserIdTag(userId));
+
   return await db.query.UsersTable.findFirst({
     where: eq(UsersTable.id, userId),
   });

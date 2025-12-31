@@ -3,6 +3,8 @@ import { eq } from "drizzle-orm";
 import db from "@/db/db";
 import { UsersTable } from "@/db/schema";
 
+import { revalidateUserCache } from "../cache/users";
+
 export const insertUser = async (user: typeof UsersTable.$inferInsert) => {
   await db.insert(UsersTable).values(user).onConflictDoNothing();
   // .onConflictDoUpdate({
@@ -11,10 +13,13 @@ export const insertUser = async (user: typeof UsersTable.$inferInsert) => {
   //   // set 是要更新的列，这里是 user 表的所有列
   //   set: user,
   // });
+  // 重新验证用户缓存
+  revalidateUserCache(user.id);
 };
 
 export const deleteUser = async (userId: string) => {
   await db.delete(UsersTable).where(eq(UsersTable.id, userId));
+  revalidateUserCache(userId);
 };
 
 export const updateUser = async (
@@ -22,4 +27,6 @@ export const updateUser = async (
   user: Partial<typeof UsersTable.$inferInsert>
 ) => {
   await db.update(UsersTable).set(user).where(eq(UsersTable.id, userId));
+  // 重新验证用户缓存
+  revalidateUserCache(userId);
 };
