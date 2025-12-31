@@ -17,6 +17,8 @@ export const EnvSchema = z.object({
   // Clerk 认证配置 - 发布密钥
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string(),
   CLERK_SECRET_KEY: string(),
+  // Clerk 认证配置 - Webhook 密钥
+  CLERK_WEBHOOK_SECRET: string().min(10),
 });
 export type EnvSchema = output<typeof EnvSchema>;
 

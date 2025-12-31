@@ -24,8 +24,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { UserAvatar } from "@/components/user-avatar";
-
-import { SignOutButton } from "./auth-buttons";
+import { SignOutButton } from "@/modules/auth/ui/components/auth-buttons";
 
 type User = {
   email: string;

@@ -1,12 +1,13 @@
 import { relations } from "drizzle-orm";
-import { boolean, integer, pgTable, primaryKey } from "drizzle-orm/pg-core";
-
 import {
-  createdAt,
-  organizationId,
-  updatedAt,
-  userId,
-} from "../schema-helpers";
+  boolean,
+  integer,
+  pgTable,
+  primaryKey,
+  varchar,
+} from "drizzle-orm/pg-core";
+
+import { createdAt, updatedAt } from "../schema-helpers";
 import { OrganizationsTable } from "./organization.schema";
 import { UsersTable } from "./user.schema";
 
@@ -14,8 +15,12 @@ import { UsersTable } from "./user.schema";
 export const OrganizationUserSettingsTable = pgTable(
   "organization_user_settings",
   {
-    userId,
-    organizationId,
+    userId: varchar()
+      .notNull()
+      .references(() => UsersTable.id, { onDelete: "cascade" }),
+    organizationId: varchar()
+      .notNull()
+      .references(() => OrganizationsTable.id, { onDelete: "cascade" }),
     newApplicationEmailNotifications: boolean().notNull().default(false),
     minimumRating: integer(),
     createdAt,
