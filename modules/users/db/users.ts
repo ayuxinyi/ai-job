@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+
 import db from "@/db/db";
 import { UsersTable } from "@/db/schema";
 
@@ -9,4 +11,15 @@ export const insertUser = async (user: typeof UsersTable.$inferInsert) => {
   //   // set 是要更新的列，这里是 user 表的所有列
   //   set: user,
   // });
+};
+
+export const deleteUser = async (userId: string) => {
+  await db.delete(UsersTable).where(eq(UsersTable.id, userId));
+};
+
+export const updateUser = async (
+  userId: string,
+  user: Partial<typeof UsersTable.$inferInsert>
+) => {
+  await db.update(UsersTable).set(user).where(eq(UsersTable.id, userId));
 };
