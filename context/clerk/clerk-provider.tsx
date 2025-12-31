@@ -1,4 +1,5 @@
 "use client";
+import { zhCN } from "@clerk/localizations";
 import { ClerkProvider as OriginalClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { type FC, type PropsWithChildren, Suspense } from "react";
@@ -11,6 +12,7 @@ export const ClerkProvider: FC<PropsWithChildren> = ({ children }) => {
     <Suspense>
       <OriginalClerkProvider
         appearance={isDarkMode ? { baseTheme: [dark] } : undefined}
+        localization={zhCN}
       >
         {children}
       </OriginalClerkProvider>
