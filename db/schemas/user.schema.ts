@@ -29,3 +29,5 @@ export const usersRelations = relations(UsersTable, ({ many, one }) => ({
   // })
   userNotificationSetting: one(UserNotificationSettingsTable),
 }));
+
+export type User = typeof UsersTable.$inferSelect;
