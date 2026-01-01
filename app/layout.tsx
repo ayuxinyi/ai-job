@@ -40,7 +40,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
-            <Toaster richColors />
+            <Toaster richColors closeButton />
           </ThemeProvider>
         </body>
       </html>

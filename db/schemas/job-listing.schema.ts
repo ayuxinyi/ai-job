@@ -71,10 +71,10 @@ export const JobListingsTable = pgTable(
     title: varchar().notNull(),
     description: varchar().notNull(),
     wage: integer(),
-    wageInterval: wageIntervalEnum().default("hourly").notNull(),
+    wageInterval: wageIntervalEnum(),
     // 工作地点，所在州的缩写，例如 CA、NY 等
-    stateAbbreviation: varchar().notNull(),
-    city: varchar().notNull(),
+    stateAbbreviation: varchar(),
+    city: varchar(),
     isFeatured: boolean().default(false).notNull(),
     locationRequirement: locationRequirementEnum().notNull(),
     experienceLevel: experienceLevelEnum().notNull(),
@@ -99,3 +99,5 @@ export const jobListingRelations = relations(
     jobListingApplications: many(JobListingApplicationsTable),
   })
 );
+
+export type JobListing = typeof JobListingsTable.$inferInsert;
