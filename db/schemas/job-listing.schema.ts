@@ -101,3 +101,5 @@ export const jobListingRelations = relations(
 );
 
 export type JobListing = typeof JobListingsTable.$inferInsert;
+
+export type JobListingSelect = typeof JobListingsTable.$inferSelect;

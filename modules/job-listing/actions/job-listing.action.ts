@@ -14,7 +14,10 @@ import {
   getJobListingIdTag,
   getJobListingOrganizationTag,
 } from "../cache/job-listing";
-import { insertJobListing } from "../db/job-listing";
+import {
+  insertJobListing,
+  updateJobListing as updateJobListingDb,
+} from "../db/job-listing";
 import { JobListingSchema } from "../schemas/job-listing.schema";
 
 export const getMostRecantedJobListing = async (orgId: string) => {
@@ -63,4 +66,33 @@ export const getJobListing = async (jobListingId: string, orgId: string) => {
       eq(JobListingsTable.organizationId, orgId)
     ),
   });
+};
+
+export const updateJobListing = async (
+  id: string,
+  unsafeData: JobListingSchema
+) => {
+  const { orgId } = await getCurrentOrganization();
+  if (!orgId)
+    return {
+      error: true,
+      message: "很抱歉，您没有权限创建岗位，请先绑定组织再进行操作",
+    };
+  const { success, data, error } = JobListingSchema.safeParse(unsafeData);
+  if (!success) {
+    return {
+      error: true,
+      message: formateZodError(error).message,
+    };
+  }
+
+  const jobListing = await getJobListing(id, orgId);
+  if (!jobListing) {
+    return {
+      error: true,
+      message: "很抱歉，岗位不存在，请检查岗位ID是否正确",
+    };
+  }
+  const updatedJobListing = await updateJobListingDb(id, data);
+  redirect(`/employer/job-listings/${updatedJobListing.id}`);
 };
