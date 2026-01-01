@@ -2,13 +2,15 @@
 
 import { useClerk } from "@clerk/nextjs";
 import {
+  ArrowLeftRightIcon,
+  Building2Icon,
   ChevronsUpDownIcon,
+  CreditCardIcon,
   LogOutIcon,
-  SettingsIcon,
-  UserIcon,
+  UserRoundCogIcon,
 } from "lucide-react";
 import Link from "next/link";
-import type { FC } from "react";
+import { type FC, useMemo } from "react";
 
 import { UserAvatar } from "@/components/app/user-avatar";
 import {
@@ -24,6 +26,7 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "@/components/ui/sidebar";
+import type { OrganizationsTable } from "@/db/schema";
 import { SignOutButton } from "@/modules/auth/ui/components/auth-buttons";
 
 type User = {
@@ -34,11 +37,15 @@ type User = {
 
 interface Props {
   user: User;
+  organization: typeof OrganizationsTable.$inferSelect;
 }
 
-export const SidebarUserButtonClient: FC<Props> = ({ user }) => {
+export const SidebarOrganizationButtonClient: FC<Props> = ({
+  user,
+  organization,
+}) => {
   const { isMobile, setOpenMobile } = useSidebar();
-  const { openUserProfile } = useClerk();
+  const { openOrganizationProfile } = useClerk();
 
   return (
     <SidebarMenu>
@@ -48,7 +55,7 @@ export const SidebarUserButtonClient: FC<Props> = ({ user }) => {
             size="lg"
             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
-            <UserInfo user={user} />
+            <OrganizationInfo organization={organization} user={user} />
             <ChevronsUpDownIcon className="ml-auto group-data-[state=collapsed]:hidden" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
@@ -59,22 +66,35 @@ export const SidebarUserButtonClient: FC<Props> = ({ user }) => {
           className="min-w-64 max-w-80"
         >
           <DropdownMenuLabel className="font-normal p-1">
-            <UserInfo user={user} />
+            <OrganizationInfo organization={organization} user={user} />
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
-              openUserProfile();
+              openOrganizationProfile();
               setOpenMobile(false);
             }}
           >
-            <UserIcon className="mr-1" />
-            个人中心
+            <Building2Icon className="mr-1" />
+            组织中心
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/user-settings/notifications">
-              <SettingsIcon className="mr-1" />
-              通知设置
+            <Link href="/employer/user-settings">
+              <UserRoundCogIcon className="mr-1" />
+              用户设置
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/employer/pricing">
+              <CreditCardIcon className="mr-1" />
+              价格计划
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href="/organizations/select">
+              <ArrowLeftRightIcon className="mr-1" />
+              切换组织
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -90,17 +110,29 @@ export const SidebarUserButtonClient: FC<Props> = ({ user }) => {
   );
 };
 
-const UserInfo: FC<Props> = ({ user }) => {
+const OrganizationInfo: FC<Props> = ({ organization, user }) => {
+  const nameInitials = useMemo(
+    () =>
+      organization.name
+        .split(" ")
+        .slice(0, 2)
+        .map(str => str[0])
+        .join(""),
+    [organization.name]
+  );
+
   return (
     <div className="flex items-center gap-2 overflow-hidden">
       <UserAvatar
-        imageUrl={user.imageUrl ?? ""}
-        name={user.name}
-        seed={user.email}
-        variant="botttsNeutral"
+        imageUrl={organization.imageUrl ?? ""}
+        name={organization.name}
+        seed={nameInitials}
+        variant="initials"
       />
       <div className="flex flex-col flex-1 min-w-0 leading-tight group-data-[state=collapsed]:hidden">
-        <span className="text-sm font-semibold truncate">{user.name}</span>
+        <span className="text-sm font-semibold truncate">
+          {organization.name}
+        </span>
         <span className="text-xs truncate">{user.email}</span>
       </div>
     </div>

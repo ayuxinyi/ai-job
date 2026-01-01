@@ -7,7 +7,7 @@ import { memo } from "react";
 
 import { cn } from "@/lib/utils";
 
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const avatarVariants = cva("", {
   variants: {
