@@ -2,6 +2,9 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { ZodError } from "zod";
 
+import { WAGE_INTERVALS } from "@/constants";
+import type { WageInterval } from "@/db/schema";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -21,4 +24,36 @@ export function formateZodError(error: ZodError) {
     message,
     fields,
   };
+}
+
+export function formatJobListingBadge(
+  arr: Array<Record<string, string>>,
+  value: string | undefined
+) {
+  if (!value) return "";
+  return arr.find(item => item.value === value)?.label || value;
+}
+
+export function formatWage(wage: number, wageInterval: WageInterval) {
+  const wageFormatter = new Intl.NumberFormat("zh-CN", {
+    style: "currency",
+    currency: "CNY",
+    minimumFractionDigits: 0,
+  });
+  return (
+    formatJobListingBadge(WAGE_INTERVALS, wageInterval) +
+    " " +
+    wageFormatter.format(wage)
+  );
+}
+
+export function formatLocation(
+  stateAbbreviation: string | null | undefined,
+  city: string | null | undefined
+) {
+  if (!stateAbbreviation && !city) return "暂未填写";
+  const locationParts = [];
+  if (stateAbbreviation) locationParts.push(stateAbbreviation.toUpperCase());
+  if (city) locationParts.push(city);
+  return locationParts.join(", ");
 }

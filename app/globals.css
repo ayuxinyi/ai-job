@@ -55,6 +55,8 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-featured: var(--featured);
+  --color-featured-foreground: var(--featured-foreground);
 }
 
 :root {
@@ -90,6 +92,10 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* feature */
+  --featured:oklch(0.7275 0.1697 308.49)
+  --featured-foreground: oklch(0.145 0 0);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -125,6 +131,10 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+
+    /* featured */
+    --featured:oklch(0.654 0.219 308.49);
+    --featured-foreground: oklch(0.985 0 0);
   }
 }
 

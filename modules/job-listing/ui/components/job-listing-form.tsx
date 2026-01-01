@@ -35,7 +35,7 @@ import {
 
 import { createJobListing } from "../../actions/job-listing.action";
 import { JobListingSchema } from "../../schemas/job-listing.schema";
-import { MarkdownEditor } from "./markdown-editor";
+import { MarkdownEditor } from "./markdown/markdown-editor";
 
 export const JobListingForm = () => {
   const form = useForm<JobListingSchema>({
