@@ -1,6 +1,6 @@
 "use server";
 
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { cacheTag } from "next/cache";
 import { cacheLife } from "next/cache";
 import { redirect } from "next/navigation";
@@ -10,7 +10,10 @@ import { JobListingsTable } from "@/db/schema";
 import { formateZodError } from "@/lib/utils";
 import { getCurrentOrganization } from "@/services/clerk/actions/get-current-auth";
 
-import { getJobListingOrganizationTag } from "../cache/job-listing";
+import {
+  getJobListingIdTag,
+  getJobListingOrganizationTag,
+} from "../cache/job-listing";
 import { insertJobListing } from "../db/job-listing";
 import { JobListingSchema } from "../schemas/job-listing.schema";
 
@@ -48,4 +51,16 @@ export const createJobListing = async (unsafeData: JobListingSchema) => {
     status: "draft",
   });
   redirect(`/employer/job-listings/${jobListing.id}`);
+};
+
+export const getJobListing = async (jobListingId: string, orgId: string) => {
+  "use cache";
+  cacheTag(getJobListingIdTag(jobListingId));
+  cacheLife("minutes");
+  return db.query.JobListingsTable.findFirst({
+    where: and(
+      eq(JobListingsTable.id, jobListingId),
+      eq(JobListingsTable.organizationId, orgId)
+    ),
+  });
 };
