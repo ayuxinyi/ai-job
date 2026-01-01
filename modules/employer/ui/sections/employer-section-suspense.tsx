@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { getMostRecantedJobListing } from "@/modules/job-listing/actions/job-listing.action";
 import { getCurrentOrganization } from "@/services/clerk/actions/get-current-auth";
-
-import { getMostRecantedJobListing } from "../../actions/job-listing.action";
 
 export const EmployerSectionSuspense = async () => {
   const { orgId } = await getCurrentOrganization();
