@@ -6,9 +6,21 @@ import {
   clerkDeleteUser,
   clerkUpdateUser,
 } from "@/services/inngest/functions/clerk";
+import {
+  clerkCreateOrganization,
+  clerkDeleteOrganization,
+  clerkUpdateOrganization,
+} from "@/services/inngest/functions/organization";
 
 // Create an API that serves zero functions
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [clerkCreateUser, clerkDeleteUser, clerkUpdateUser],
+  functions: [
+    clerkCreateUser,
+    clerkDeleteUser,
+    clerkUpdateUser,
+    clerkCreateOrganization,
+    clerkDeleteOrganization,
+    clerkUpdateOrganization,
+  ],
 });

@@ -1,11 +1,12 @@
 import { eq } from "drizzle-orm";
 
 import db from "@/db/db";
+import type { User } from "@/db/schema";
 import { UsersTable } from "@/db/schema";
 
 import { revalidateUserCache } from "../cache/users";
 
-export const insertUser = async (user: typeof UsersTable.$inferInsert) => {
+export const insertUser = async (user: User) => {
   await db.insert(UsersTable).values(user).onConflictDoNothing();
   // .onConflictDoUpdate({
   //   // target 是要检查冲突的列，这里是 id，如果 id 冲突了，就更新
@@ -22,10 +23,7 @@ export const deleteUser = async (userId: string) => {
   revalidateUserCache(userId);
 };
 
-export const updateUser = async (
-  userId: string,
-  user: Partial<typeof UsersTable.$inferInsert>
-) => {
+export const updateUser = async (userId: string, user: Partial<User>) => {
   await db.update(UsersTable).set(user).where(eq(UsersTable.id, userId));
   // 重新验证用户缓存
   revalidateUserCache(userId);
