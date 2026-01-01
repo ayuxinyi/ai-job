@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SendIcon } from "lucide-react";
+import type { FC } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -32,15 +33,35 @@ import {
   NONE_SELECT_VALUE,
   WAGE_INTERVALS,
 } from "@/constants";
+import type { JobListingSelect } from "@/db/schema";
 
-import { createJobListing } from "../../actions/job-listing.action";
+import {
+  createJobListing,
+  updateJobListing,
+} from "../../actions/job-listing.action";
 import { JobListingSchema } from "../../schemas/job-listing.schema";
 import { MarkdownEditor } from "./markdown/markdown-editor";
 
-export const JobListingForm = () => {
+interface JobListingFormProps {
+  jobListing?: Pick<
+    JobListingSelect,
+    | "id"
+    | "title"
+    | "description"
+    | "stateAbbreviation"
+    | "city"
+    | "wage"
+    | "wageInterval"
+    | "experienceLevel"
+    | "type"
+    | "locationRequirement"
+  >;
+}
+
+export const JobListingForm: FC<JobListingFormProps> = ({ jobListing }) => {
   const form = useForm<JobListingSchema>({
     resolver: zodResolver(JobListingSchema),
-    defaultValues: {
+    defaultValues: jobListing ?? {
       title: "",
       description: "",
       stateAbbreviation: null,
@@ -54,7 +75,10 @@ export const JobListingForm = () => {
   });
 
   const onSubmit = async (values: JobListingSchema) => {
-    const res = await createJobListing(values);
+    const action = jobListing
+      ? updateJobListing.bind(null, jobListing.id)
+      : createJobListing;
+    const res = await action(values);
     if (res.error) {
       toast.error(res.message);
     }
