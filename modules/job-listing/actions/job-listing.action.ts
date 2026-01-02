@@ -9,6 +9,7 @@ import db from "@/db/db";
 import { JobListingsTable } from "@/db/schema";
 import { formateZodError } from "@/lib/utils";
 import { getCurrentOrganization } from "@/services/clerk/actions/get-current-auth";
+import { hasOrgUserPermission } from "@/services/clerk/lib/org-user-permissions";
 
 import {
   getJobListingIdTag,
@@ -36,7 +37,10 @@ export const getMostRecantedJobListing = async (orgId: string) => {
 
 export const createJobListing = async (unsafeData: JobListingSchema) => {
   const { orgId } = await getCurrentOrganization();
-  if (!orgId)
+  if (
+    !orgId ||
+    !(await hasOrgUserPermission("org:job_listing:job_listings_create"))
+  )
     return {
       error: true,
       message: "很抱歉，您没有权限创建岗位，请先绑定组织再进行操作",
@@ -73,10 +77,13 @@ export const updateJobListing = async (
   unsafeData: JobListingSchema
 ) => {
   const { orgId } = await getCurrentOrganization();
-  if (!orgId)
+  if (
+    !orgId ||
+    !(await hasOrgUserPermission("org:job_listing:job_listings_update"))
+  )
     return {
       error: true,
-      message: "很抱歉，您没有权限创建岗位，请先绑定组织再进行操作",
+      message: "很抱歉，您没有权限更新岗位，请先绑定组织再进行操作",
     };
   const { success, data, error } = JobListingSchema.safeParse(unsafeData);
   if (!success) {
