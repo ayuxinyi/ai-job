@@ -1,10 +1,8 @@
-import { EditIcon } from "lucide-react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { FC } from "react";
 
+import { EditButton, StatusButton } from "@/components/app/auth-action-button";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { JOB_LISTING_STATUSES } from "@/constants";
 import { formatJobListingBadge } from "@/lib/utils";
 import { getCurrentOrganization } from "@/services/clerk/actions/get-current-auth";
@@ -40,12 +38,8 @@ export const JobListingSection: FC<Props> = async ({ params }) => {
         </div>
         {/* empty：当没有任何内容时，将其margin-top设置为-4，主要是为了抵消gap-4的间距 */}
         <div className="flex items-center gap-2 empty:-mt-4">
-          <Button asChild variant="outline">
-            <Link href={`/employer/job-listings/${jobListing.id}/edit`}>
-              <EditIcon className="size-4" />
-              编辑
-            </Link>
-          </Button>
+          <EditButton id={jobListingId} />
+          <StatusButton status={jobListing.status} />
         </div>
       </div>
       <MarkdownPartial
