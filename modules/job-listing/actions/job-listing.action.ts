@@ -18,7 +18,13 @@ import {
 import {
   insertJobListing,
   updateJobListing as updateJobListingDb,
+  deleteJobListing as deleteJobListingDb,
 } from "../db/job-listing";
+import {
+  hasReachedMaxFeaturedJobListings,
+  hasReachedMaxPublishedJobListings,
+} from "../lib/plan-feature-helper";
+import { getNextJobListingStatus } from "../lib/utils";
 import { JobListingSchema } from "../schemas/job-listing.schema";
 
 export const getMostRecantedJobListing = async (orgId: string) => {
@@ -102,4 +108,120 @@ export const updateJobListing = async (
   }
   const updatedJobListing = await updateJobListingDb(id, data);
   redirect(`/employer/job-listings/${updatedJobListing.id}`);
+};
+
+export const toggleJobListingStatus = async (id: string) => {
+  const { orgId } = await getCurrentOrganization();
+  if (!orgId) {
+    return {
+      error: true,
+      message: "很抱歉，您没有权限修改岗位状态，请先绑定组织再进行操作",
+    };
+  }
+  const jobListing = await getJobListing(id, orgId);
+  if (!jobListing) {
+    return {
+      error: true,
+      message: "很抱歉，岗位不存在，请检查岗位ID是否正确",
+    };
+  }
+
+  if (
+    !(await hasOrgUserPermission("org:job_listing:job_listings_change_status"))
+  ) {
+    return {
+      error: true,
+      message:
+        "很抱歉，您当前没有权限修改岗位状态，请升级您的套餐或者联系组织管理员",
+    };
+  }
+  const newStatus = getNextJobListingStatus(jobListing.status);
+  if (
+    newStatus === "published" &&
+    (await hasReachedMaxPublishedJobListings())
+  ) {
+    return {
+      error: true,
+      message:
+        "很抱歉，您当前可以发布的岗位数已达上限，请升级您的套餐或下架已发布的岗位后再进行操作",
+    };
+  }
+  await updateJobListingDb(id, {
+    status: newStatus,
+    isFeatured: newStatus === "published" ? undefined : false,
+    postedAt:
+      newStatus === "published" && jobListing.postedAt === null
+        ? new Date()
+        : undefined,
+  });
+  return {
+    error: false,
+  };
+};
+
+export const toggleJobListingFeatured = async (id: string) => {
+  const { orgId } = await getCurrentOrganization();
+  if (!orgId) {
+    return {
+      error: true,
+      message: "很抱歉，您没有权限更改岗位的精选状态，请先绑定组织再进行操作",
+    };
+  }
+  const jobListing = await getJobListing(id, orgId);
+  if (!jobListing) {
+    return {
+      error: true,
+      message: "很抱歉，岗位不存在，请检查岗位ID是否正确",
+    };
+  }
+
+  if (
+    !(await hasOrgUserPermission("org:job_listing:job_listings_change_status"))
+  ) {
+    return {
+      error: true,
+      message:
+        "很抱歉，您当前没有权限修改岗位精选状态，请升级您的套餐或者联系组织管理员",
+    };
+  }
+  const newFeatured = !jobListing.isFeatured;
+  if (newFeatured && (await hasReachedMaxFeaturedJobListings())) {
+    return {
+      error: true,
+      message:
+        "很抱歉，您当前可以精选的岗位数已达上限，请升级您的套餐或取消已精选的岗位后再进行操作",
+    };
+  }
+  await updateJobListingDb(id, {
+    isFeatured: newFeatured,
+  });
+  return {
+    error: false,
+  };
+};
+
+export const deleteJobListing = async (id: string) => {
+  const { orgId } = await getCurrentOrganization();
+  if (!orgId) {
+    return {
+      error: true,
+      message: "很抱歉，您没有权限删除岗位，请先绑定组织再进行操作",
+    };
+  }
+  const jobListing = await getJobListing(id, orgId);
+  if (!jobListing) {
+    return {
+      error: true,
+      message: "很抱歉，岗位不存在，请检查岗位ID是否正确",
+    };
+  }
+  if (!(await hasOrgUserPermission("org:job_listing:job_listings_delete"))) {
+    return {
+      error: true,
+      message:
+        "很抱歉，您当前没有权限删除岗位，请升级您的套餐或者联系组织管理员",
+    };
+  }
+  await deleteJobListingDb(id);
+  redirect("/employer");
 };
