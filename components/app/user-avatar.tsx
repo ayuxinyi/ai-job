@@ -12,11 +12,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 const avatarVariants = cva("", {
   variants: {
     size: {
-      default: "h-8 w-8",
-      xs: "h-4 w-4",
-      sm: "h-6 w-6",
-      lg: "h-10 w-10",
-      xl: "h-[160px] w-[160px]",
+      default: "size-8",
+      xs: "size-4",
+      sm: "size-6",
+      lg: "size-10",
+      xl: "size-14",
     },
   },
   defaultVariants: {
