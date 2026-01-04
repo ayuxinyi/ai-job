@@ -1,4 +1,4 @@
-import { count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import { cacheTag } from "next/cache";
 
 import db from "@/db/db";
@@ -74,4 +74,39 @@ export const getAllJobListings = async (orgId: string) => {
   });
 
   return data;
+};
+
+// 获取岗位详情
+export const getJobListingById = async (id: string) => {
+  const jobListing = await db.query.JobListingsTable.findFirst({
+    where: and(
+      eq(JobListingsTable.status, "published"),
+      eq(JobListingsTable.id, id)
+    ),
+    with: {
+      organization: {
+        columns: {
+          name: true,
+          imageUrl: true,
+          id: true,
+        },
+      },
+    },
+  });
+  return jobListing;
+};
+
+export const getJobListingApplication = async ({
+  jobListingId,
+  userId,
+}: {
+  jobListingId: string;
+  userId: string;
+}) => {
+  return await db.query.JobListingApplicationsTable.findFirst({
+    where: and(
+      eq(JobListingApplicationsTable.jobListingId, jobListingId),
+      eq(JobListingApplicationsTable.userId, userId)
+    ),
+  });
 };

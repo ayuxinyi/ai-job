@@ -36,7 +36,7 @@ const SuspendedComponent: FC<Props> = async ({ searchParams, params }) => {
         <Link
           key={jobListing.id}
           className="block"
-          href={`/job-listings/${jobListing.id}?${convertSearchparamsToString(
+          href={`/job-listing/${jobListing.id}?${convertSearchparamsToString(
             searchParamsObj
           )}`}
         >

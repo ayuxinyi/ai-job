@@ -8,6 +8,8 @@ import { redirect } from "next/navigation";
 import db from "@/db/db";
 import { JobListingsTable } from "@/db/schema";
 import { formateZodError } from "@/lib/utils";
+import { getJobListingApplicationIdTag } from "@/modules/job-listing-applicant/cache/job-listing-applicant";
+import { getOrganizationIdTag } from "@/modules/organizations/cache/organizations";
 import { getCurrentOrganization } from "@/services/clerk/actions/get-current-auth";
 import { hasOrgUserPermission } from "@/services/clerk/lib/org-user-permissions";
 
@@ -18,6 +20,8 @@ import {
 import {
   deleteJobListing as deleteJobListingDb,
   getAllJobListings,
+  getJobListingApplication,
+  getJobListingById as getJobListingByIdDb,
   insertJobListing,
   updateJobListing as updateJobListingDb,
 } from "../db/job-listing";
@@ -234,4 +238,36 @@ export const getAllJobListingsByOrgId = async (orgId: string) => {
   cacheTag(getJobListingOrganizationTag(orgId));
   cacheLife("minutes");
   return await getAllJobListings(orgId);
+};
+
+// 获取岗位详情
+export const getJobListingById = async (id: string) => {
+  "use cache";
+  cacheTag(getJobListingIdTag(id));
+  cacheLife("minutes");
+
+  const jobListing = await getJobListingByIdDb(id);
+
+  if (jobListing) {
+    cacheTag(getOrganizationIdTag(jobListing.organizationId));
+  }
+
+  return jobListing;
+};
+
+export const getJobListingApplicationById = async ({
+  jobListingId,
+  userId,
+}: {
+  jobListingId: string;
+  userId: string;
+}) => {
+  "use cache";
+  cacheTag(getJobListingApplicationIdTag({ jobListingId, userId }));
+  cacheLife("minutes");
+
+  return await getJobListingApplication({
+    jobListingId,
+    userId,
+  });
 };
