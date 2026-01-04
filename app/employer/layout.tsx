@@ -15,7 +15,7 @@ const EmployerLayoutSuspense: FC<PropsWithChildren> = async ({ children }) => {
   if (!orgId) return redirect("/organizations/select");
   return (
     <AppSidebar
-      content={<EmployerSidebarContent />}
+      content={<EmployerSidebarContent orgId={orgId} />}
       footerButton={<SidebarOrganizationButton />}
     >
       {children}
