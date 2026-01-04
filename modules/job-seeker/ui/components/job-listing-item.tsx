@@ -16,7 +16,7 @@ import { DaysSincePosting } from "./days-since-posting";
 
 interface Props {
   jobListing: JobListingSelect;
-  organization: Pick<Organization, "name" | "imageUrl">;
+  organization: Pick<Organization, "id" | "name" | "imageUrl">;
 }
 
 export const JobListingItem: FC<Props> = ({ jobListing, organization }) => {

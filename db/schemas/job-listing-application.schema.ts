@@ -63,3 +63,8 @@ export const jobListingApplicationsRelations = relations(
     }),
   })
 );
+
+export type JobListingApplicationInputSchema =
+  typeof JobListingApplicationsTable.$inferInsert;
+export type JobListingApplicationSelectSchema =
+  typeof JobListingApplicationsTable.$inferSelect;

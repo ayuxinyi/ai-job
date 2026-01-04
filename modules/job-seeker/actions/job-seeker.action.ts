@@ -4,6 +4,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import db from "@/db/db";
 import { JobListingsTable } from "@/db/schema";
 import { getJobListingGlobalTag } from "@/modules/job-listing/cache/job-listing";
+import { getOrganizationIdTag } from "@/modules/organizations/cache/organizations";
 
 import type { SearchSchema } from "../db/schemas/job-seeker";
 
@@ -50,7 +51,7 @@ export const getJobListingsBySearchParamsOrJobListingId = async (
   }
 
   //
-  return await db.query.JobListingsTable.findMany({
+  const data = await db.query.JobListingsTable.findMany({
     where: or(
       jobListingId
         ? and(
@@ -63,6 +64,7 @@ export const getJobListingsBySearchParamsOrJobListingId = async (
     with: {
       organization: {
         columns: {
+          id: true,
           name: true,
           imageUrl: true,
         },
@@ -73,4 +75,10 @@ export const getJobListingsBySearchParamsOrJobListingId = async (
       desc(JobListingsTable.postedAt),
     ],
   });
+
+  data.forEach(jobListing => {
+    cacheTag(getOrganizationIdTag(jobListing.organization.id));
+  });
+
+  return data;
 };
