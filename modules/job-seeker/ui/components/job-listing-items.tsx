@@ -31,7 +31,7 @@ const SuspendedComponent: FC<Props> = async ({ searchParams, params }) => {
   if (jobListings.length === 0)
     return <JobListingsEmpty searchParamsObj={searchParamsObj} />;
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-4">
       {jobListings.map(jobListing => (
         <Link
           key={jobListing.id}

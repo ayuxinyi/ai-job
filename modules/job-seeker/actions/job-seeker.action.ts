@@ -7,7 +7,7 @@ import { getJobListingGlobalTag } from "@/modules/job-listing/cache/job-listing"
 
 import type { SearchSchema } from "../db/schemas/job-seeker";
 
-export const getJobListingsBySearchParamsOrJobListingId = (
+export const getJobListingsBySearchParamsOrJobListingId = async (
   searchParams: SearchSchema,
   jobListingId: string | undefined
 ) => {
@@ -50,7 +50,7 @@ export const getJobListingsBySearchParamsOrJobListingId = (
   }
 
   //
-  return db.query.JobListingsTable.findMany({
+  return await db.query.JobListingsTable.findMany({
     where: or(
       jobListingId
         ? and(
