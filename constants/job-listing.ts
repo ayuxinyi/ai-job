@@ -54,3 +54,9 @@ export const JOB_TYPES: {
   { value: "part-time", label: "兼职职位" },
   { value: "internship", label: "实习岗位" },
 ];
+
+export const JOB_LISTING_STATUS_ORDER: Record<jobListingStatus, number> = {
+  published: 0,
+  draft: 1,
+  delisted: 2,
+};

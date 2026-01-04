@@ -16,9 +16,10 @@ import {
   getJobListingOrganizationTag,
 } from "../cache/job-listing";
 import {
+  deleteJobListing as deleteJobListingDb,
+  getAllJobListings,
   insertJobListing,
   updateJobListing as updateJobListingDb,
-  deleteJobListing as deleteJobListingDb,
 } from "../db/job-listing";
 import {
   hasReachedMaxFeaturedJobListings,
@@ -27,6 +28,7 @@ import {
 import { getNextJobListingStatus } from "../lib/utils";
 import { JobListingSchema } from "../schemas/job-listing.schema";
 
+// 获取最近创建的岗位
 export const getMostRecantedJobListing = async (orgId: string) => {
   "use cache";
   cacheTag(getJobListingOrganizationTag(orgId));
@@ -224,4 +226,12 @@ export const deleteJobListing = async (id: string) => {
   }
   await deleteJobListingDb(id);
   redirect("/employer");
+};
+
+// 获取所有的岗位
+export const getAllJobListingsByOrgId = async (orgId: string) => {
+  "use cache";
+  cacheTag(getJobListingOrganizationTag(orgId));
+  cacheLife("minutes");
+  return await getAllJobListings(orgId);
 };

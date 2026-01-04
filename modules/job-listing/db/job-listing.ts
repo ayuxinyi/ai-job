@@ -1,7 +1,13 @@
-import { eq } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
+import { cacheTag } from "next/cache";
 
 import db from "@/db/db";
-import { type JobListing, JobListingsTable } from "@/db/schema";
+import {
+  type JobListing,
+  JobListingApplicationsTable,
+  JobListingsTable,
+} from "@/db/schema";
+import { getJobListingApplicationJobListingTag } from "@/modules/job-listing-applicant/cache/job-listing-applicant";
 
 import { revalidateJobListingCache } from "../cache/job-listing";
 
@@ -43,4 +49,29 @@ export const deleteJobListing = async (id: string) => {
     });
   revalidateJobListingCache(deletedJobListing);
   return deletedJobListing;
+};
+
+export const getAllJobListings = async (orgId: string) => {
+  const data = await db
+    .select({
+      id: JobListingsTable.id,
+      title: JobListingsTable.title,
+      status: JobListingsTable.status,
+      // 获取申请人数
+      applicationCount: count(JobListingApplicationsTable.userId),
+    })
+    .from(JobListingsTable)
+    .where(eq(JobListingsTable.organizationId, orgId))
+    .leftJoin(
+      JobListingApplicationsTable,
+      eq(JobListingsTable.id, JobListingApplicationsTable.jobListingId)
+    )
+    .groupBy(JobListingApplicationsTable.jobListingId, JobListingsTable.id)
+    .orderBy(desc(JobListingsTable.createdAt));
+
+  data.forEach(jobListing => {
+    cacheTag(getJobListingApplicationJobListingTag(jobListing.id));
+  });
+
+  return data;
 };
