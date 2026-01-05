@@ -25,6 +25,11 @@ type Events = {
       userId: string;
     };
   };
+  "app/resume.uploaded": {
+    user: {
+      id: string;
+    };
+  };
 };
 
 // Create a client to send and receive events

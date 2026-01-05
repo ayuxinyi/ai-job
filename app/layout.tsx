@@ -6,6 +6,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@/context/clerk/clerk-provider";
 import { ThemeProvider } from "@/context/theme/theme-provider";
+import { UploadThingSSR } from "@/services/uploadthing/components/upload-thing-ssr";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
           >
             {children}
             <Toaster richColors closeButton />
+            <UploadThingSSR />
           </ThemeProvider>
         </body>
       </html>

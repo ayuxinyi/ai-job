@@ -8,6 +8,7 @@ import { UsersTable } from "./user.schema";
 export const UserResumeTable = pgTable("user_resume", {
   userId: varchar()
     .notNull()
+    .primaryKey()
     .references(() => UsersTable.id, { onDelete: "cascade" }),
   resumeFileUrl: varchar().notNull(),
   resumeFileKey: varchar().notNull(),
@@ -22,3 +23,6 @@ export const userResumeRelations = relations(UserResumeTable, ({ one }) => ({
     references: [UsersTable.id],
   }),
 }));
+
+export type UserResume = typeof UserResumeTable.$inferInsert;
+export type UserResumeSelect = typeof UserResumeTable.$inferSelect;
