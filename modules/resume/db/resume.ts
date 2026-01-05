@@ -26,3 +26,11 @@ export const upsertUserResumeDb = async (
 
   revalidateUserResumeCache(userId);
 };
+
+export const updateUserResume = async (userId: string, aiSummary: string) => {
+  await db
+    .update(UserResumeTable)
+    .set({ aiSummary })
+    .where(eq(UserResumeTable.userId, userId));
+  revalidateUserResumeCache(userId);
+};

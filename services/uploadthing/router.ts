@@ -39,15 +39,15 @@ export const customFileRouter = {
       const { userId } = metadata;
       const resumeFileKey = await getUserResumeFileKey(userId);
 
-      if (resumeFileKey) {
-        // 删除旧的简历
-        await uploadthing.deleteFiles(resumeFileKey);
-      }
-
       await upsertUserResume(userId, {
         resumeFileUrl: file.ufsUrl,
         resumeFileKey: file.key,
       });
+
+      if (resumeFileKey) {
+        // 删除旧的简历
+        await uploadthing.deleteFiles(resumeFileKey);
+      }
       // 调用inngest事件,通过AI生成简历总结
       await inngest.send({
         name: "app/resume.uploaded",
