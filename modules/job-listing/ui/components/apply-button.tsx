@@ -61,7 +61,7 @@ export const ApplyButton = async ({ jobListingId }: Props) => {
     );
   }
   const userResume = await getUserResumeByUserId(userId);
-  if (userResume) {
+  if (!userResume) {
     return (
       <Popover>
         <PopoverTrigger asChild>

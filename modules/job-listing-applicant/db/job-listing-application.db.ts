@@ -1,3 +1,5 @@
+import { and, eq } from "drizzle-orm";
+
 import db from "@/db/db";
 import type { JobListingApplicationInputSchema } from "@/db/schema";
 import { JobListingApplicationsTable } from "@/db/schema";
@@ -23,4 +25,27 @@ export const createJobListingApplication = async ({
     });
   revalidateJobListingApplicationCache(created);
   return created;
+};
+
+export const updateJobListingApplication = async ({
+  jobListingId,
+  userId,
+  rating,
+}: {
+  jobListingId: string;
+  userId: string;
+  rating: number;
+}) => {
+  await db
+    .update(JobListingApplicationsTable)
+    .set({
+      rating,
+    })
+    .where(
+      and(
+        eq(JobListingApplicationsTable.jobListingId, jobListingId),
+        eq(JobListingApplicationsTable.userId, userId)
+      )
+    );
+  revalidateJobListingApplicationCache({ jobListingId, userId });
 };

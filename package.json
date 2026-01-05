@@ -23,6 +23,7 @@
     "@dicebear/collection": "^9.2.4",
     "@dicebear/core": "^9.2.4",
     "@hookform/resolvers": "^5.2.2",
+    "@inngest/agent-kit": "^0.13.2",
     "@mdxeditor/editor": "^3.52.3",
     "@neondatabase/serverless": "^1.0.2",
     "@openrouter/ai-sdk-provider": "^1.5.4",
