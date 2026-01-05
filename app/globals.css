@@ -4,6 +4,10 @@
 /*  typography插件，用于markdown的渲染，使markdown的样式与tailwindcss的样式一致*/
 @plugin "@tailwindcss/typography";
 
+/* 引入uploadthing 样式 */
+@import "uploadthing/tw/v4";
+@source "../node_modules/@uploadthing/react/dist"; /** <-- depends on your project structure */
+
 @custom-variant dark (&:is(.dark *));
 
 /* @custom-variant dark {

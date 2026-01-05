@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export const useIsBreakpoint = (breakpoint: string) => {
   const [isBreakpoint, setIsBreakpoint] = useState(() => {
     if (typeof window !== "undefined") {
-      return window.matchMedia(breakpoint).matches;
+      return window.matchMedia(`(${breakpoint})`).matches;
     }
     return false;
   });
