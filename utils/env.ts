@@ -21,6 +21,8 @@ export const EnvSchema = z.object({
   CLERK_WEBHOOK_SECRET: string().min(10),
   // Uploadthing 配置
   UPLOADTHING_TOKEN: string().min(10),
+  // OpenRouter API 配置
+  OPENROUTER_API_KEY: string().min(10),
 });
 export type EnvSchema = output<typeof EnvSchema>;
 

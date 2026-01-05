@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import {
+  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -19,16 +20,18 @@ const AISummaryCard = async () => {
   if (!resume || !resume.aiSummary) return null;
 
   return (
-    <CardHeader className="border-b">
-      <CardTitle>AI 摘要</CardTitle>
-      <CardDescription>
-        这是您的简历的 AI
-        摘要，包含了您的简历的主要信息。可以帮助雇主快速了解您的简历。
-      </CardDescription>
+    <Card>
+      <CardHeader className="border-b">
+        <CardTitle>AI 摘要</CardTitle>
+        <CardDescription>
+          这是您的简历的 AI
+          摘要，包含了您的简历的主要信息。可以帮助雇主快速了解您的简历。
+        </CardDescription>
+      </CardHeader>
       <CardContent>
         <MarkdownRender source={resume.aiSummary} />
       </CardContent>
-    </CardHeader>
+    </Card>
   );
 };
 export default AISummaryCard;
