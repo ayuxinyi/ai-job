@@ -6,6 +6,10 @@ import {
   clerkDeleteUser,
   clerkUpdateUser,
 } from "@/services/inngest/functions/clerk";
+import {
+  prepareDailyUserJobListingNotifications,
+  sendDailyUserJobListingEmail,
+} from "@/services/inngest/functions/email";
 import { jobListingApplication } from "@/services/inngest/functions/job-listing-application";
 import {
   clerkCreateOrganization,
@@ -26,5 +30,7 @@ export const { GET, POST, PUT } = serve({
     clerkUpdateOrganization,
     createAiSummaryOfUploadedResume,
     jobListingApplication,
+    sendDailyUserJobListingEmail,
+    prepareDailyUserJobListingNotifications,
   ],
 });

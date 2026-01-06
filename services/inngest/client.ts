@@ -4,6 +4,8 @@ import type {
   UserJSON,
 } from "@clerk/nextjs/server";
 import { EventSchemas, Inngest } from "inngest";
+
+import type { JobListingSelect } from "@/db/schema";
 type ClerkWebhookData<T> = {
   data: {
     data: T;
@@ -11,6 +13,14 @@ type ClerkWebhookData<T> = {
     headers: Record<string, string>;
   };
 };
+
+type EventJobListing = Omit<
+  JobListingSelect,
+  "createdAt" | "postedAt" | "updatedAt" | "status" | "organizationId"
+> & {
+  organizationName: string;
+};
+
 // 定义事件类型，这样我们可以在inngest函数中得到更好的类型提示
 type Events = {
   "clerk/user.created": ClerkWebhookData<UserJSON>;
@@ -28,6 +38,16 @@ type Events = {
   "app/resume.uploaded": {
     user: {
       id: string;
+    };
+  };
+  "app/email.daily-user-job-listings": {
+    data: {
+      aiPrompt?: string;
+      jobListings: EventJobListing[];
+    };
+    user: {
+      email: string;
+      name: string;
     };
   };
 };

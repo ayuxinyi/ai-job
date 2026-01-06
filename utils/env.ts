@@ -23,6 +23,10 @@ export const EnvSchema = z.object({
   UPLOADTHING_TOKEN: string().min(10),
   // OpenRouter API 配置
   OPENROUTER_API_KEY: string().min(10),
+  // Resend API 配置
+  RESEND_API_KEY: string().min(10),
+  // 服务器URL
+  SERVER_URL: string().min(10),
 });
 export type EnvSchema = output<typeof EnvSchema>;
 

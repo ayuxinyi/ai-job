@@ -30,7 +30,7 @@ const listingSchema = object({
 export const getMatchingJobListings = async (
   prompt: string,
   jobListings: output<typeof listingSchema>[],
-  { maxNumberOfJobs }: { maxNumberOfJobs: number }
+  { maxNumberOfJobs }: { maxNumberOfJobs?: number } = {}
 ) => {
   const agent = createAgent({
     name: "Job Matching Agent",
