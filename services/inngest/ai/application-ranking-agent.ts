@@ -1,5 +1,4 @@
-import { createAgent, createTool } from "@inngest/agent-kit";
-import { openai } from "inngest";
+import { createAgent, createTool, openai } from "@inngest/agent-kit";
 import { number, object, string } from "zod";
 
 import { updateJobListingApplication } from "@/modules/job-listing-applicant/db/job-listing-application.db";
