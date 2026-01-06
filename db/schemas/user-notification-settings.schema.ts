@@ -28,3 +28,9 @@ export const userNotificationSettingsRelations = relations(
     }),
   })
 );
+
+export type UserNotificationSettingsSelect =
+  typeof UserNotificationSettingsTable.$inferSelect;
+
+export type UserNotificationSettingsInsert =
+  typeof UserNotificationSettingsTable.$inferInsert;
