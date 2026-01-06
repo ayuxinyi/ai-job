@@ -2,6 +2,10 @@ import { NonRetriableError } from "inngest";
 import { Webhook } from "svix";
 
 import {
+  deleteOrganizationUserSettings,
+  insertOrganizationUserSettings,
+} from "@/modules/organizations/db/organization-user-settings";
+import {
   deleteOrganization,
   insertOrganization,
   updateOrganization,
@@ -119,6 +123,64 @@ export const clerkUpdateOrganization = inngest.createFunction(
         name: organizationData.name,
         imageUrl: organizationData.image_url || "",
         updatedAt: new Date(organizationData.updated_at),
+      });
+    });
+  }
+);
+
+// 处理 Clerk 组织成员创建事件，将组织成员数据存储到数据库中
+export const clerkCreateOrganizationMembership = inngest.createFunction(
+  {
+    id: "clerk/create-db-organization-membership",
+    name: "Clerk - Create DB Organization Membership",
+  },
+  {
+    event: "clerk/organizationMembership.created",
+  },
+  async ({ event, step }) => {
+    await step.run("verify-webhook", async () => {
+      try {
+        verifyWebhook(event.data);
+      } catch {
+        throw new NonRetriableError("很抱歉，我们无法验证 Webhook 签名");
+      }
+    });
+
+    await step.run("create-organization-membership", async () => {
+      const userId = event.data.data.public_user_data.user_id;
+      const orgId = event.data.data.organization.id;
+
+      await insertOrganizationUserSettings({
+        userId,
+        organizationId: orgId,
+      });
+    });
+  }
+);
+
+export const clerkDeleteOrganizationMembership = inngest.createFunction(
+  {
+    id: "clerk/delete-db-organization-membership",
+    name: "Clerk - Delete DB Organization Membership",
+  },
+  {
+    event: "clerk/organizationMembership.deleted",
+  },
+  async ({ event, step }) => {
+    await step.run("verify-webhook", async () => {
+      try {
+        verifyWebhook(event.data);
+      } catch {
+        throw new NonRetriableError("很抱歉，我们无法验证 Webhook 签名");
+      }
+    });
+
+    await step.run("delete-organization-membership", async () => {
+      const userId = event.data.data.id;
+      const orgId = event.data.data.organization.id;
+      await deleteOrganizationUserSettings({
+        userId,
+        organizationId: orgId,
       });
     });
   }

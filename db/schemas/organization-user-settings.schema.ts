@@ -47,3 +47,8 @@ export const organizationUserSettingsRelations = relations(
     }),
   })
 );
+
+export type OrganizationUserSettingsInsert =
+  typeof OrganizationUserSettingsTable.$inferInsert;
+export type OrganizationUserSettingsSelect =
+  typeof OrganizationUserSettingsTable.$inferSelect;
