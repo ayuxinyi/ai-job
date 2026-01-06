@@ -34,7 +34,7 @@ export const LoadingSwap: FC<PropsWithChildren<Props>> = ({
         )}
       >
         <Loader2Icon className="animate-spin" />
-        <span>{loadingText}</span>
+        {loadingText && <span>{loadingText}</span>}
       </div>
     </div>
   );
