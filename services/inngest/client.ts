@@ -6,7 +6,10 @@ import type {
 } from "@clerk/nextjs/server";
 import { EventSchemas, Inngest } from "inngest";
 
-import type { JobListingSelect } from "@/db/schema";
+import type {
+  JobListingApplicationSelectSchema,
+  JobListingSelect,
+} from "@/db/schema";
 type ClerkWebhookData<T> = {
   data: {
     data: T;
@@ -51,6 +54,21 @@ type Events = {
     user: {
       email: string;
       name: string;
+    };
+  };
+  "app/email.daily-organization-user-application": {
+    data: {
+      applications: (Pick<JobListingApplicationSelectSchema, "rating"> & {
+        userName: string;
+        organizationName: string;
+        organizationId: string;
+        jobListingId: string;
+        jobListingTitle: string;
+      })[];
+    };
+    user: {
+      name: string;
+      email: string;
     };
   };
 };
